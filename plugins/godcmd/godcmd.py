@@ -36,6 +36,14 @@ COMMANDS = {
         "alias": ["model", "模型"],
         "desc": "查看和设置全局模型",
     },
+    "人格": {
+        "alias": ["人格", "人格描述"],
+        "desc": "查看和设置人格描述",
+    },
+    "音色": {
+        "alias": ["音色", "语音音色"],
+        "desc": "查看和设置语音音色, 可选的有 alloy, echo, fable, onyx, nova, shimmer",
+    },
     "set_openai_api_key": {
         "alias": ["set_openai_api_key"],
         "args": ["api_key"],
@@ -276,6 +284,31 @@ class Godcmd(Plugin):
                             Bridge().reset_bot()
                             model = conf().get("model") or const.GPT35
                             ok, result = True, "模型设置为: " + str(model)
+                elif cmd == "人格":
+                    if not isadmin and not self.is_admin_in_group(e_context["context"]):
+                        ok, result = False, "需要管理员权限执行"
+                    elif len(args) == 0:
+                        character_desc = conf().get("character_desc") or ""
+                        ok, result = True, "当前人格为: " + str(character_desc)
+                    elif len(args) == 1:
+                        conf()["character_desc"] = args[0]
+                        Bridge().reset_bot()
+                        character_desc = conf().get("character_desc") or ""
+                        ok, result = True, "人格设置为: " + str(character_desc)
+                elif cmd == "音色":
+                    if not isadmin and not self.is_admin_in_group(e_context["context"]):
+                        ok, result = False, "需要管理员权限执行"
+                    elif len(args) == 0:
+                        tts_voice_id = conf().get("tts_voice_id") or ""
+                        ok, result = True, "当前音色为: " + str(tts_voice_id)
+                    elif len(args) == 1:
+                        if args[0] not in ["alloy", "echo", "fable", "onyx", "nova", "shimmer"]:
+                            ok, result = False, "音色名称不存在"
+                        else:
+                            conf()["tts_voice_id"] = args[0]
+                            Bridge().reset_bot()
+                            tts_voice_id = conf().get("tts_voice_id") or ""
+                            ok, result = True, "音色设置为: " + str(tts_voice_id)
                 elif cmd == "id":
                     ok, result = True, user
                 elif cmd == "set_openai_api_key":

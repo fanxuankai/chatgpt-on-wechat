@@ -7,6 +7,7 @@ import openai
 
 from bridge.reply import Reply, ReplyType
 from common.log import logger
+from common.tmp_dir import TmpDir
 from config import conf
 from voice.voice import Voice
 import requests
@@ -28,7 +29,7 @@ class OpenaiVoice(Voice):
                 # 'Content-Type': 'multipart/form-data' # 加了会报错，不知道什么原因
             }
             files = {
-                "file": file,
+                "file": ('test.wav', file, 'audio/wave')
             }
             data = {
                 "model": "whisper-1",
@@ -58,7 +59,7 @@ class OpenaiVoice(Voice):
                 'voice': conf().get("tts_voice_id") or "alloy"
             }
             response = requests.post(url, headers=headers, json=data)
-            file_name = "tmp/" + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + str(random.randint(0, 1000)) + ".mp3"
+            file_name = TmpDir().path() + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + str(random.randint(0, 1000)) + ".mp3"
             logger.debug(f"[OPENAI] text_to_Voice file_name={file_name}, input={text}")
             with open(file_name, 'wb') as f:
                 f.write(response.content)

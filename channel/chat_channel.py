@@ -177,6 +177,12 @@ class ChatChannel(Channel):
 
             # reply的发送步骤
             self._send_reply(context, reply)
+            config = conf()
+            voice_reply_text = config.get("voice_reply_text")
+            if reply.type == ReplyType.TEXT and voice_reply_text:
+                context["desire_rtype"] = ReplyType.VOICE
+                reply_voice = self._decorate_reply(context, reply)
+                self._send_reply(context, reply_voice)
 
     def _generate_reply(self, context: Context, reply: Reply = Reply()) -> Reply:
         e_context = PluginManager().emit_event(
