@@ -1,0 +1,9 @@
+{
+    "enabled": true,
+    "server": "http://suno-api:8000"
+    "mv": "chirp-v3-5",
+    "prompt": "",
+    "make_instrumental": false,
+    "prefix": "作曲",
+    "share_link": "https://suno.com/song"
+}
