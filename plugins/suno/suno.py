@@ -38,14 +38,18 @@ class Suno(Plugin):
         enabled = self.config.get("enabled")
         if content.startswith(plugin_prefix) and enabled:
             content = content.replace(plugin_prefix, "", 1)
-            ids = self.request_suno(content.strip())
             reply = Reply()
             reply.type = ReplyType.TEXT
             e_context["reply"] = reply
-            if ids:
-                msg = "\n".join(ids)
-                reply.content = f"正在努力作曲中，请稍后点击链接试听吧！\n{msg}"
-            else:
+            try:
+                ids = self.request_suno(content.strip())
+                if ids:
+                    msg = "\n".join(ids)
+                    reply.content = f"正在努力作曲中，请稍后点击链接试听吧！\n{msg}"
+                else:
+                    reply.content = "作曲失败，请稍后重试吧！"
+            except Exception as e:
+                logger.error(f"[Suno] error, msg={e}")
                 reply.content = "作曲失败，请稍后重试吧！"
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
 
@@ -65,12 +69,14 @@ class Suno(Plugin):
             res = res.json()
             logger.debug(f"[Suno] res={res}")
             ids = []
-            for clip in res.get("clips"):
-                ids.append(self.config.get("share_link") + "/" + clip.get("id"))
+            clips = res.get("clips")
+            if clips:
+                for clip in res.get("clips"):
+                    ids.append(self.config.get("share_link") + "/" + clip.get("id"))
             return ids
         else:
             res_json = res.json()
-            logger.error(f"[Suno] error, status_code={res.status_code}, msg={res_json.get('message')}")
+            logger.error(f"[Suno] error, status_code={res.status_code}, msg={res_json.get('detail')}")
             return []
 
     def get_help_text(self, **kwargs):
