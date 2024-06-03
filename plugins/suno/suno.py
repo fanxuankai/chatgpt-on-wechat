@@ -40,7 +40,7 @@ class Suno(Plugin):
         enabled = self.config.get("enabled")
         if content.startswith(plugin_prefix) and enabled:
             content = content.replace(plugin_prefix, "", 1)
-            ids = self.request_suno(content)
+            ids = self.request_suno(content.strip())
             reply = Reply()
             reply.type = ReplyType.TEXT
             e_context["reply"] = reply
@@ -77,4 +77,4 @@ class Suno(Plugin):
 
     def get_help_text(self, **kwargs):
         plugin_prefix = self.config.get("prefix")
-        return f"输入{plugin_prefix}，我会为您作曲"
+        return f"输入：{plugin_prefix} 赫本的风，我会为您作曲"

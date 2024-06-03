@@ -1,6 +1,6 @@
 {
     "enabled": true,
-    "server": "http://suno-api:8000"
+    "server": "http://suno-api:8000",
     "mv": "chirp-v3-5",
     "prompt": "",
     "make_instrumental": false,
