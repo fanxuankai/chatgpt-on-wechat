@@ -12,7 +12,7 @@ from plugins import *
     desire_priority=-1,
     hidden=True,
     desc="suno api plugin",
-    version="0.1",
+    version="1.0",
     author="Jolc",
 )
 class Suno(Plugin):
@@ -21,10 +21,8 @@ class Suno(Plugin):
         super().__init__()
         try:
             self.config = super().load_config()
-            self.server = self.config.get("server")
-            self.server = self.config.get("mv")
-            self.prompt = self.config.get("prompt")
-            self.make_instrumental = self.config.get("make_instrumental")
+            if not self.config:
+                self._load_config_template()
             logger.info("[Suno] inited")
             self.handlers[Event.ON_HANDLE_CONTEXT] = self.on_handle_context
         except Exception as e:
@@ -78,3 +76,14 @@ class Suno(Plugin):
     def get_help_text(self, **kwargs):
         plugin_prefix = self.config.get("prefix")
         return f"输入：{plugin_prefix} 赫本的风，我会为您作曲"
+
+    def _load_config_template(self):
+        logger.debug("No Suno plugin config.json, use plugins/suno/config.json.template")
+        try:
+            plugin_config_path = os.path.join(self.path, "config.json.template")
+            if os.path.exists(plugin_config_path):
+                with open(plugin_config_path, "r", encoding="utf-8") as f:
+                    plugin_conf = json.load(f)
+                    return plugin_conf
+        except Exception as e:
+            logger.exception(e)
