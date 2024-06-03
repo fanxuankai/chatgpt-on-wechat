@@ -68,7 +68,7 @@ class Suno(Plugin):
             logger.debug(f"[Suno] res={res}")
             ids = []
             for clip in res.get("clips"):
-                ids.append(self.config.get("share_link") + clip.get("id"))
+                ids.append(self.config.get("share_link") + "/" + clip.get("id"))
             return ids
         else:
             res_json = res.json()
