@@ -47,10 +47,10 @@ class Suno(Plugin):
                     msg = "\n".join(ids)
                     reply.content = f"正在努力作曲中，请稍后点击链接试听吧！\n{msg}"
                 else:
-                    reply.content = "作曲失败，请稍后重试吧！"
+                    reply.content = "[ERROR]\n作曲失败，请稍后重试吧！"
             except Exception as e:
                 logger.error(f"[Suno] error, msg={e}")
-                reply.content = "作曲失败，请稍后重试吧！"
+                reply.content = "[ERROR]\n作曲失败，请稍后重试吧！"
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
 
     def request_suno(self, content):
