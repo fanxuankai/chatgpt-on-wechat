@@ -37,7 +37,8 @@ class Suno(Plugin):
             return
         content = e_context["context"].content
         plugin_prefix = self.config.get("prefix")
-        if content.startswith(plugin_prefix):
+        enabled = self.config.get("enabled")
+        if content.startswith(plugin_prefix) and enabled:
             content = content.replace(plugin_prefix, "", 1)
             ids = self.request_suno(content)
             reply = Reply()
